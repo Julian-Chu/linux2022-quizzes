@@ -45,12 +45,12 @@ int longestConsecutive(int *nums, int n_size){
             list_del(&node->link);
 
             int left = num, right = num;
-            while ((node = find(left--, n_size, heads))){
+            while ((node = find(--left n_size, heads))){
                 len++;
                 list_del(&node->link);
             }
 
-            while ((node = find(right++, n_size, heads))){
+            while ((node = find(--right, n_size, heads))){
                 len++;
                 list_del(&node->link);
             }
