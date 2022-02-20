@@ -78,31 +78,27 @@ struct ListNode *create_list_from_array(int *nums, int numsSize){
     return head;
 }
 
-
-void test_deleteDuplicates(){
-    int vals[3] = {1,2,2};
-    int expect[2] = {1,2};
-    struct ListNode *h1 = create_list_from_array(vals, 3);
-    h1 = deleteDuplicates(h1);
-    struct ListNode *h2 = create_list_from_array(expect, 2);
+void test_deleteDuplicates(int *input_arr, int input_arr_size, int *expected, int expected_size){
+    struct ListNode *h1 = deleteDuplicates(create_list_from_array(input_arr, input_arr_size));
+    struct ListNode *h2 = create_list_from_array(expected, expected_size);
     assert(list_equal(h1, h2));
 }
 
-
-void test_deleteDuplicates_iter(){
-    int vals[6] = {1,1,2,2,3,3};
-    int expect[3] = {1,2,3};
-    struct ListNode *h1 = deleteDuplicates_iter(create_list_from_array(vals, 6));
-    struct ListNode *h2 = (struct ListNode*)create_list_from_array(expect, 3);
-    //printf("res: %d\n",list_equal(h1, h2));
+void test_deleteDuplicates_iter(int *input_arr, int input_arr_size, int *expected, int expected_size){
+    struct ListNode *h1 = deleteDuplicates_iter(create_list_from_array(input_arr, input_arr_size));
+    struct ListNode *h2 = create_list_from_array(expected, expected_size);
     assert(list_equal(h1, h2));
 }
 
 int main(void){
+    int input[6] = {1,1,2,2,3,3};
+    int input_size = 6;
+    int expect[3] = {1,2,3};
+    int expect_size = 3;
     printf("testing deleteDuplicates_iter\n");
-    test_deleteDuplicates_iter();
+    test_deleteDuplicates_iter(input, input_size, expect, expect_size);
     printf("testing deleteDuplicates\n");
-    test_deleteDuplicates();
+    test_deleteDuplicates(input, input_size, expect, expect_size);
     printf("all tests passed\n");
 }
 
