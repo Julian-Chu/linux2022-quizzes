@@ -17,7 +17,6 @@ struct ListNode{
     struct list_head node;
 };
 
-
 struct list_head *deleteDuplicates(struct list_head *head)
 {
     if(!head)
@@ -40,13 +39,16 @@ struct list_head *deleteDuplicates(struct list_head *head)
 
 struct list_head *create_list(){
     struct ListNode *head = malloc(sizeof(struct ListNode));
-    head->val = 0;
+    head->val = 1;
     struct ListNode *node1 = malloc(sizeof(struct ListNode));
     node1->val = 1;
     (&head->node)->next = &node1->node;
     struct ListNode *node2 = malloc(sizeof(struct ListNode));
     node2->val = 2;
     (&node1->node)->next = &node2->node;
+    struct ListNode *node3 = malloc(sizeof(struct ListNode));
+    node3->val = 2;
+    (&node2->node)->next = &node3->node;
     return &head->node;
 }
 
@@ -66,7 +68,7 @@ int main(void){
     struct list_head *head = create_list();
 
     struct ListNode *Node = container_of(head, struct ListNode, node);
-    printf("%d\n", Node->val);
+    head = deleteDuplicates(head);
     print_ListNodes(head);
 }
 
