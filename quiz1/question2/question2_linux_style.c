@@ -37,6 +37,29 @@ struct list_head *deleteDuplicates(struct list_head *head)
     return head;
 }
 
+
+struct list_head *deleteDuplicates_iter(struct list_head *head)
+{
+    if(!head)
+        return NULL;
+
+    struct list_head *cur = head;
+    struct ListNode *curNode, *nextNode;
+    curNode = container_of(head, struct ListNode, node);
+
+    while(cur->next){
+        nextNode = container_of(cur->next, struct ListNode, node);
+        if(curNode->val == nextNode->val){
+            cur->next = cur->next->next; 
+        }else{
+            cur = cur->next;
+            curNode = nextNode;
+        }
+    }
+   
+    return head;
+}
+
 struct list_head *create_list(){
     struct ListNode *head = malloc(sizeof(struct ListNode));
     head->val = 1;
@@ -49,6 +72,9 @@ struct list_head *create_list(){
     struct ListNode *node3 = malloc(sizeof(struct ListNode));
     node3->val = 2;
     (&node2->node)->next = &node3->node;
+    struct ListNode *node4 = malloc(sizeof(struct ListNode));
+    node4->val = 2;
+    (&node3->node)->next = &node4->node;
     return &head->node;
 }
 
@@ -66,10 +92,13 @@ void print_ListNodes(struct list_head *head){
 
 int main(void){
     struct list_head *head = create_list();
-
-    struct ListNode *Node = container_of(head, struct ListNode, node);
     head = deleteDuplicates(head);
     print_ListNodes(head);
+
+
+    struct list_head *head_iter = create_list();
+    head_iter = deleteDuplicates_iter(head_iter);
+    print_ListNodes(head_iter);
 }
 
 

@@ -27,12 +27,13 @@ struct ListNode *deleteDuplicates_iter(struct ListNode *head){
     if(!head)
         return NULL;
     struct ListNode *cur = head;
-    while(cur && cur->next){
+    while(cur->next){
         if(cur->val == cur->next->val){
             struct ListNode *next = cur->next->next;
             cur->next = next;
+        }else{
+            cur = cur->next;
         }
-        cur = cur->next;
     }
     return head;
 }
@@ -91,8 +92,8 @@ void test_deleteDuplicates_iter(int *input_arr, int input_arr_size, int *expecte
 }
 
 int main(void){
-    int input[6] = {1,1,2,2,3,3};
-    int input_size = 6;
+    int input[8] = {1,1,2,2,2,3,3,3};
+    int input_size = 8;
     int expect[3] = {1,2,3};
     int expect_size = 3;
     printf("testing deleteDuplicates_iter\n");
