@@ -29,8 +29,7 @@ struct ListNode *deleteDuplicates_iter(struct ListNode *head){
     struct ListNode *cur = head;
     while(cur->next){
         if(cur->val == cur->next->val){
-            struct ListNode *next = cur->next->next;
-            cur->next = next;
+            cur->next = cur->next->next;
         }else{
             cur = cur->next;
         }
