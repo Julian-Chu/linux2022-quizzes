@@ -19,7 +19,7 @@ LRUCache *lRUCacheCreate(int capacity)
     obj->capacity = capacity;
     INIT_LIST_HEAD(&obj->dhead);
     for (int i = 0; i < capacity; i++)
-        INIT_LIST_HEAD(&obj->hheads)
+        INIT_LIST_HEAD(&obj->hheads[i]);
     return obj;
 }
 
@@ -34,7 +34,7 @@ void lRUCacheFree(LRUCache *obj)
 }
 
 int lRUCacheGet(LRUCache *obj, int key){
-    LRUCache *lru;
+    LRUNode *lru;
     int hash = key % obj->capacity;
     list_for_each_entry(lru, &obj->hheads[hash], hlink){
         if(lru->key == key){
@@ -46,7 +46,7 @@ int lRUCacheGet(LRUCache *obj, int key){
 }
 
 void lRUCachePut(LRUCache *obj, int key, int value){
-    LRUCache *lru;
+    LRUNode *lru;
     int hash = key% obj->capacity;
     list_for_each_entry(lru, &obj->hheads[hash], hlink){
         if(lru->key == key){
@@ -68,4 +68,7 @@ void lRUCachePut(LRUCache *obj, int key, int value){
     list_add(&lru->dlink, &obj->dhead);
     list_add(&lru->hlink, &obj->hheads[hash]);
     lru->value = value;
+}
+
+int main(void){
 }
