@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "list.h"
+#include <assert.h>
 
 typedef struct{
     int capacity, count;
@@ -71,4 +72,29 @@ void lRUCachePut(LRUCache *obj, int key, int value){
 }
 
 int main(void){
+    printf("testing LRUCache with capacity 4\n");
+    LRUCache *cache = lRUCacheCreate(4);
+    printf("put kvs: (1,1), (2,2), (3,3), (4,4)\n");
+    lRUCachePut(cache, 1,1);
+    lRUCachePut(cache, 2,2);
+    lRUCachePut(cache, 3,3);
+    lRUCachePut(cache, 4,4);
+    LRUNode *lru;
+    lru = list_last_entry(&cache->dhead, LRUNode, dlink);
+    assert(lru->key==1);
+    printf("now least recently key is 1\n");
+    assert(lRUCacheGet(cache, 1) == 1);
+    printf("get key 1 with its value 1\n");
+    lru = list_last_entry(&cache->dhead, LRUNode, dlink);
+    assert(lru->value==2);
+    printf("now least recently key is 2\n");
+    printf("put kv: (5,5)\n");
+    lRUCachePut(cache, 5, 5);
+    lru = list_first_entry(&cache->dhead, LRUNode, dlink);
+    assert(lru->value==5);
+    assert(lRUCacheGet(cache, 2)==-1);
+    lru = list_last_entry(&cache->dhead, LRUNode, dlink);
+    assert(lru->value==3);
+    printf("now least recently key is 3, 2 is removed\n");
+    printf("test passed\n");
 }
