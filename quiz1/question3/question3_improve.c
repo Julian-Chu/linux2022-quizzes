@@ -4,7 +4,7 @@
 #include <assert.h>
 
 typedef struct{
-    int capacity, count;
+    int capacity, count, bits;
     struct list_head dhead, hheads[];
 } LRUCache;
 
@@ -13,11 +13,13 @@ typedef struct{
     struct list_head hlink, dlink;
 } LRUNode;
 
-LRUCache *lRUCacheCreate(int capacity)
+LRUCache *lRUCacheCreate(int bits)
 {
+    int capacity = 1 << bits;
     LRUCache *obj = malloc(sizeof(*obj) + capacity * sizeof(struct list_head));
     obj->count = 0;
     obj->capacity = capacity;
+    obj->bits = bits;
     INIT_LIST_HEAD(&obj->dhead);
     for (int i = 0; i < capacity; i++)
         INIT_LIST_HEAD(&obj->hheads[i]);
@@ -34,10 +36,15 @@ void lRUCacheFree(LRUCache *obj)
     free(obj);
 }
 
+#define GOLDEN_RATIO_32 0x61C88647
+static inline unsigned int hash(unsigned int val, unsigned int bits) {
+    /* High bits are more random, so use them. */
+    return (val * GOLDEN_RATIO_32) >> (32 - bits);
+}
+
 int lRUCacheGet(LRUCache *obj, int key){
     LRUNode *lru;
-    int hash = key % obj->capacity;
-    list_for_each_entry(lru, &obj->hheads[hash], hlink){
+    list_for_each_entry(lru, &obj->hheads[hash(key, obj->bits)], hlink){
         if(lru->key == key){
             list_move(&lru->dlink, &obj->dhead);
             return lru->value;
@@ -48,10 +55,10 @@ int lRUCacheGet(LRUCache *obj, int key){
 
 void lRUCachePut(LRUCache *obj, int key, int value){
     LRUNode *lru;
-    int hash = key% obj->capacity;
-    list_for_each_entry(lru, &obj->hheads[hash], hlink){
+    list_for_each_entry(lru, &obj->hheads[hash(key, obj->bits)], hlink){
         if(lru->key == key){
             list_move(&lru->dlink, &obj->dhead);
+            list_move(&lru->hlink, &obj->hheads[hash(key, obj->bits)]);
             lru->value = value;
             return;
         }
@@ -67,13 +74,13 @@ void lRUCachePut(LRUCache *obj, int key, int value){
     }
     lru->key = key;
     list_add(&lru->dlink, &obj->dhead);
-    list_add(&lru->hlink, &obj->hheads[hash]);
+    list_add(&lru->hlink, &obj->hheads[hash(key, obj->bits)]);
     lru->value = value;
 }
 
 int main(void){
     printf("testing LRUCache with capacity 4\n");
-    LRUCache *cache = lRUCacheCreate(4);
+    LRUCache *cache = lRUCacheCreate(2);
     printf("put kvs: (1,1), (2,2), (3,3), (4,4)\n");
     lRUCachePut(cache, 1,1);
     lRUCachePut(cache, 2,2);

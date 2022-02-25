@@ -3,3 +3,6 @@ run:
 	@./a.out
 
 
+run2:
+	@gcc -g question3_improve.c -o a.out
+	@./a.out
