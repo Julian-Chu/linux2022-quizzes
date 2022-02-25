@@ -44,6 +44,10 @@ static inline unsigned int hash(unsigned int val, unsigned int bits) {
 
 int lRUCacheGet(LRUCache *obj, int key){
     LRUNode *lru;
+
+    lru = list_first_entry(&obj->dhead, LRUNode, dlink);
+    if(lru->key == key) return lru->value;
+
     list_for_each_entry(lru, &obj->hheads[hash(key, obj->bits)], hlink){
         if(lru->key == key){
             list_move(&lru->dlink, &obj->dhead);
