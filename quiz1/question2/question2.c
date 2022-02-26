@@ -9,21 +9,40 @@ struct ListNode{
 };
 
 struct ListNode *deleteDuplicates(struct ListNode *head){
-    if(!head)
-        return NULL;
+    struct ListNode **indirect = &head;
+    while(*indirect && (*indirect)->next && (*indirect)->val == (*indirect)->next->val)
+        *indirect = (*indirect)->next;
 
-    if(head->next && head->val == head->next->val){
-        while(head->next && head->val == head->next->val)
-            head = head->next;
-        //return deleteDuplicates(head->next);
-    }
+    if((*indirect)->next)
+        (*indirect)->next = deleteDuplicates((*indirect)->next);
+    return *indirect;
 
-    head->next = deleteDuplicates(head->next);
-    return head;
+    // without pointer to pointer
+   // if(!head)
+   //     return NULL;
+
+   //     while(head->next && head->val == head->next->val)
+   //         head = head->next;
+
+   // head->next = deleteDuplicates(head->next);
+   // return head;
 }
 
 
 struct ListNode *deleteDuplicates_iter(struct ListNode *head){
+    struct ListNode **indirect = &head;
+
+    while(*indirect && (*indirect)->next){
+        if((*indirect)->val == (*indirect)->next->val){
+            *indirect = (*indirect)->next;
+            continue;
+        }
+        indirect = &(*indirect)->next; 
+    }
+
+    return head;
+
+    /*
     if(!head)
         return NULL;
     struct ListNode *cur = head;
@@ -35,6 +54,7 @@ struct ListNode *deleteDuplicates_iter(struct ListNode *head){
         }
     }
     return head;
+    */
 }
 
 
